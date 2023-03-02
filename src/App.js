@@ -5,8 +5,9 @@ import "./index.css";
 
 
 function Quiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(9);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [isComplete, setIsComplete] = useState(false);
   const [score, setScore] = useState(0);
 
   function handleAnswerChange(option) {
@@ -15,7 +16,7 @@ function Quiz() {
     setSelectedAnswers(newSelectedAnswers);
   }
 
-  
+
 
   function handleNextQuestionClick() {
     const currentAnswer = selectedAnswers[currentQuestion];
@@ -26,39 +27,44 @@ function Quiz() {
         ? 1
         : 0;
       setScore(score + currentScore);
-      setCurrentQuestion(currentQuestion + 1);
+      if (questions.length > currentQuestion + 1) {
+        setCurrentQuestion(currentQuestion + 1)
+      } else { setIsComplete(true) };
     }
   }
 
 
   return (
-    <div className="Quiz">
-      <h1>Round {questions[currentQuestion].round}</h1>
-      <div className="Questions">
-      <h2>Question {currentQuestion + 1}</h2>
-      <p>{questions[currentQuestion].question}</p>
-      <ul>
-        {questions[currentQuestion].answers.map((answer, index) => (
-          <li key={index}>
-            <label>
-              <input
-                type="checkbox"
-                className="checkbox_1"
-                checked={selectedAnswers[currentQuestion] === answer.option}
-                onChange={() => handleAnswerChange(answer.option)}
-              />
-              {answer.option}
-            </label>
-          </li>
-        ))}
-      </ul>
-      <button onClick={handleNextQuestionClick}>Next question</button>
-      {currentQuestion === questions.length && (
-        <p>Your score is {score}/{questions.length}</p>
-      )}
+    (isComplete) ? (
+      <div className="Quiz">
+        <h1>Так быстро?</h1>
+        <h2>Ваш результат {score}/{questions.length}</h2>
       </div>
-    </div>
-  );
+    ) : (
+      <div className="Quiz">
+        <h1>{questions[currentQuestion].round}</h1>
+        <div className="Questions">
+          <h2>Вопрос {currentQuestion + 1}</h2>
+          <p className="questionValue">{questions[currentQuestion].question}</p>
+          <ul className="list">
+            {questions[currentQuestion].answers.map((answer, index) => (
+              <li key={index} className="list">
+                <label>
+                  <input
+                    type="checkbox"
+                    className="checkbox_1"
+                    checked={selectedAnswers[currentQuestion] === answer.option}
+                    onChange={() => handleAnswerChange(answer.option)}
+                  />
+                  {answer.option}
+                </label>
+              </li>
+            ))}
+          </ul>
+          <button onClick={handleNextQuestionClick}>Next question</button>
+        </div>
+      </div>
+    ));
 }
 
 export default Quiz;
