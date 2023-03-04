@@ -11,7 +11,7 @@ function Quiz() {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
   const [score, setScore] = useState(0);
-  const [Limit, setLimit] = useState(questions[currentQuestion].timeLimit)
+  const [limit, setLimit] = useState(questions[currentQuestion].timeLimit)
 
   function handleAnswerChange(option) {
     const newSelectedAnswers = [...selectedAnswers];
@@ -33,24 +33,26 @@ function Quiz() {
       if (questions.length > currentQuestion + 1) {
         setCurrentQuestion(currentQuestion + 1)
       } else { setIsComplete(true) };
-    } else { setScore(score) ;
+    } else {
+      setScore(score);
       if (questions.length > currentQuestion + 1) {
         setCurrentQuestion(currentQuestion + 1)
-      } else { setIsComplete(true) }; }
+      } else { setIsComplete(true) };
+    }
   }
 
 
   useEffect(() => {
-    const Timer =
-      Limit > 0 &&
+    const timer =
+      limit > 0 &&
       setInterval(function () {
         setLimit(Limit - 1)
       }, 1000);
-    if (Limit === 0) { handleNextQuestion() }
-    return () => clearInterval(Timer)
-  }, [Limit])
+    if (limit === 0) { handleNextQuestion() }
+    return () => clearInterval(timer)
+  }, [limit])
 
-  useEffect (() => {
+  useEffect(() => {
     setLimit(questions[currentQuestion].timeLimit);
   }, [currentQuestion])
 
@@ -66,8 +68,10 @@ function Quiz() {
       <div className="Quiz">
         <h1>{questions[currentQuestion].round}</h1>
         <div className="Questions">
-          <h2>Вопрос {currentQuestion + 1}</h2>
-          <p className="questionValue">{questions[currentQuestion].question}</p>
+          <div className="header">
+            <h2>Вопрос {currentQuestion + 1}</h2>
+            <p className="questionValue">{questions[currentQuestion].question}</p>
+          </div>
           <ul className="list">
             {questions[currentQuestion].answers.map((answer, index) => (
               <li key={index} className="list">
@@ -83,9 +87,13 @@ function Quiz() {
               </li>
             ))}
           </ul>
-          <button onClick={handleNextQuestion}>Next question</button>
         </div>
-        <div>{Limit}</div>
+        <div className="componentFooter">
+         <div className="nextButton">
+           <button onClick={handleNextQuestion}>Next question</button>
+           </div>
+           <div className="timer"> Осталось {Limit} с.</div>
+        </div>
       </div>
     ));
 }
